@@ -80,11 +80,20 @@ void Model::backPropogation(Matrixd right_answer)
         dh = dx;
         df = _layers[i]->getLayerDerivationMatrix();
 
+#ifdef CPU_OPTIMIZATION
         dt = dh.array() * df.array();
 
         dw = _layers[i - 1]->getLayerActiveValues().transpose() * dt; //
 
         dx = dt * _layers[i]->getLayerWeights().transpose();
+#endif
+#ifdef GPU_OPTIMIZATION
+        dt = K::emultMM(dh, df);
+
+        dw = K::multMM(K::transposeM(_layers[i - 1]->getLayerActiveValues()), dt);
+
+        dx = K::multMM(dt, K::transposeM(_layers[i]->getLayerWeights()));
+#endif
 
         db = dt;
 
@@ -117,11 +126,20 @@ void Model::backPropogation(){
         dh = dx;
         df = _layers[i]->getLayerDerivationMatrix();
 
+#ifdef CPU_OPTIMIZATION
         dt = dh.array() * df.array();
 
         dw = _layers[i - 1]->getLayerActiveValues().transpose() * dt; //
 
         dx = dt * _layers[i]->getLayerWeights().transpose();
+#endif
+#ifdef GPU_OPTIMIZATION
+        dt = K::emultMM(dh, df);
+
+        dw = K::multMM(K::transposeM(_layers[i - 1]->getLayerActiveValues()), dt);
+
+        dx = K::multMM(dt, K::transposeM(_layers[i]->getLayerWeights()));
+#endif
 
         db = dt;
 

@@ -1,4 +1,4 @@
-#define CPU_OPTIMIZATION
+// Backend (CPU/GPU) is selected in Config.hxx via VENIO_USE_GPU.
 #include "ADAM.cxx"
 #include "GD.cxx"
 #include "BFGS.cxx"
