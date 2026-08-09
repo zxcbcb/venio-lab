@@ -1,6 +1,4 @@
 #include "Kernel.hxx"
-#include "Kernel.hxx"
-#include "Kernel.hxx"
 
 namespace Kernel {
     //GPU WARNINGS--------------------------
@@ -164,11 +162,11 @@ namespace Kernel {
         int cols = static_cast<int>(a.cols());
         int size = rows * cols;
 
-        // Создаем и инициализируем cuBLAS handle
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ cuBLAS handle
         cublasHandle_t handle;
         checkCublas(cublasCreate(&handle), "Failed to create cuBLAS handle");
 
-        // Выделяем память на GPU для матриц a, b и результирующей матрицы c
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ GPU пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ a, b пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ c
         double* d_a = nullptr;
         double* d_b = nullptr;
         double* d_c = nullptr;
@@ -178,14 +176,14 @@ namespace Kernel {
         checkCuda(cudaMalloc((void**)&d_b, bytes), "Failed to allocate GPU memory for b");
         checkCuda(cudaMalloc((void**)&d_c, bytes), "Failed to allocate GPU memory for c");
 
-        // Копируем данные матриц a и b на GPU
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ a пїЅ b пїЅпїЅ GPU
         checkCuda(cudaMemcpy(d_a, a.data(), bytes, cudaMemcpyHostToDevice), "Failed to copy data to GPU for a");
         checkCuda(cudaMemcpy(d_b, b.data(), bytes, cudaMemcpyHostToDevice), "Failed to copy data to GPU for b");
 
         const double alpha = 1.0;
         const double beta = 1.0;
 
-        // Выполняем операцию сложения матриц c = alpha * a + beta * b
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ c = alpha * a + beta * b
         checkCublas(cublasDgeam(handle,
             CUBLAS_OP_N, CUBLAS_OP_N,
             rows, cols,
@@ -196,18 +194,18 @@ namespace Kernel {
             d_c, rows),
             "Failed to perform matrix addition");
 
-        // Создаем результирующую матрицу на CPU
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ CPU
         Matrixd c(rows, cols);
 
-        // Копируем результат обратно на CPU
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ CPU
         checkCuda(cudaMemcpy(c.data(), d_c, bytes, cudaMemcpyDeviceToHost), "Failed to copy data from GPU for c");
 
-        // Освобождаем память на GPU
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ GPU
         checkCuda(cudaFree(d_a), "Failed to free GPU memory for a");
         checkCuda(cudaFree(d_b), "Failed to free GPU memory for b");
         checkCuda(cudaFree(d_c), "Failed to free GPU memory for c");
 
-        // Уничтожаем cuBLAS handle
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ cuBLAS handle
         checkCublas(cublasDestroy(handle), "Failed to destroy cuBLAS handle");
 
         return c;
@@ -231,12 +229,12 @@ namespace Kernel {
         int rows = static_cast<int>(A.rows());
         int cols = static_cast<int>(A.cols());
 
-        // Если матрица не является вектором, выбрасываем исключение
+        // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (rows != 1 && cols != 1) {
             throw std::invalid_argument("Input is not a vector");
         }
 
-        // Определяем размеры для транспонированного вектора
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         int transposedRows = cols;
         int transposedCols = rows;
 
@@ -256,7 +254,7 @@ namespace Kernel {
         const double alpha = 1.0;
         const double beta = 0.0;
 
-        // Используем cuBLAS для выполнения операции транспонирования
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ cuBLAS пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         checkCublas(cublasDgeam(tHandle,
             CUBLAS_OP_T, CUBLAS_OP_N,
             transposedRows, transposedCols,
@@ -282,7 +280,7 @@ namespace Kernel {
     //----------------------------------------
     Matrixd multVV(const Vectord& a, const Vectord& b)
     {
-        return a*b;
+        return a * b.transpose();
     }
     //----------------------------------------
 
@@ -337,11 +335,11 @@ namespace Kernel {
         int rows = static_cast<int>(A.rows());
         int cols = static_cast<int>(A.cols());
 
-        // Создаем и инициализируем cuBLAS handle
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ cuBLAS handle
         cublasHandle_t handle;
         checkCublas(cublasCreate(&handle), "Failed to create cuBLAS handle");
 
-        // Выделяем память на GPU для матриц A, B и C
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ GPU пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ A, B пїЅ C
         double* d_A = nullptr;
         double* d_B = nullptr;
         double* d_C = nullptr;
@@ -351,14 +349,14 @@ namespace Kernel {
         checkCuda(cudaMalloc((void**)&d_B, size), "Failed to allocate GPU memory for B");
         checkCuda(cudaMalloc((void**)&d_C, size), "Failed to allocate GPU memory for C");
 
-        // Копируем данные матриц A и B на GPU
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ A пїЅ B пїЅпїЅ GPU
         checkCuda(cudaMemcpy(d_A, A.data(), size, cudaMemcpyHostToDevice), "Failed to copy data to GPU for A");
         checkCuda(cudaMemcpy(d_B, B.data(), size, cudaMemcpyHostToDevice), "Failed to copy data to GPU for B");
 
         const double alpha = 1.0;
         const double beta = -1.0;
 
-        // Выполняем операцию вычитания d_C = alpha * d_A + beta * d_B (т.е. d_C = d_A - d_B)
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ d_C = alpha * d_A + beta * d_B (пїЅ.пїЅ. d_C = d_A - d_B)
         checkCublas(cublasDgeam(handle,
             CUBLAS_OP_N, CUBLAS_OP_N,
             rows, cols,
@@ -369,18 +367,18 @@ namespace Kernel {
             d_C, rows),
             "Failed to perform matrix subtraction");
 
-        // Создаем результирующую матрицу на CPU
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ CPU
         Matrixd C(rows, cols);
 
-        // Копируем результат обратно на CPU
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ CPU
         checkCuda(cudaMemcpy(C.data(), d_C, size, cudaMemcpyDeviceToHost), "Failed to copy data from GPU for C");
 
-        // Освобождаем память на GPU
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ GPU
         checkCuda(cudaFree(d_A), "Failed to free GPU memory for A");
         checkCuda(cudaFree(d_B), "Failed to free GPU memory for B");
         checkCuda(cudaFree(d_C), "Failed to free GPU memory for C");
 
-        // Уничтожаем cuBLAS handle
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ cuBLAS handle
         checkCublas(cublasDestroy(handle), "Failed to destroy cuBLAS handle");
 
         return C;
@@ -405,11 +403,11 @@ namespace Kernel {
         int rows = static_cast<int>(A.rows());
         int cols = static_cast<int>(A.cols());
 
-        // Создаем и инициализируем cuBLAS handle
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ cuBLAS handle
         cublasHandle_t handle;
         checkCublas(cublasCreate(&handle), "Failed to create cuBLAS handle");
 
-        // Выделяем память на GPU для матрицы A и результирующей матрицы C
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ GPU пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ A пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ C
         double* d_A = nullptr;
         double* d_C = nullptr;
         size_t size = rows * cols * sizeof(double);
@@ -417,26 +415,26 @@ namespace Kernel {
         checkCuda(cudaMalloc((void**)&d_A, size), "Failed to allocate GPU memory for A");
         checkCuda(cudaMalloc((void**)&d_C, size), "Failed to allocate GPU memory for C");
 
-        // Копируем данные матрицы A на GPU
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ A пїЅпїЅ GPU
         checkCuda(cudaMemcpy(d_A, A.data(), size, cudaMemcpyHostToDevice), "Failed to copy data to GPU for A");
 
-        // Выполняем операцию умножения на скаляр d_C = S * d_A
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ d_C = S * d_A
         checkCublas(cublasDscal(handle, rows * cols, &S, d_A, 1), "Failed to perform matrix scaling");
 
-        // Копируем результат из d_A в d_C (если необходимо)
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ d_A пїЅ d_C (пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ)
         checkCuda(cudaMemcpy(d_C, d_A, size, cudaMemcpyDeviceToDevice), "Failed to copy data from d_A to d_C");
 
-        // Создаем результирующую матрицу на CPU
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ CPU
         Matrixd C(rows, cols);
 
-        // Копируем результат обратно на CPU
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ CPU
         checkCuda(cudaMemcpy(C.data(), d_C, size, cudaMemcpyDeviceToHost), "Failed to copy data from GPU for C");
 
-        // Освобождаем память на GPU
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ GPU
         checkCuda(cudaFree(d_A), "Failed to free GPU memory for A");
         checkCuda(cudaFree(d_C), "Failed to free GPU memory for C");
 
-        // Уничтожаем cuBLAS handle
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ cuBLAS handle
         checkCublas(cublasDestroy(handle), "Failed to destroy cuBLAS handle");
 
         return C;
@@ -446,11 +444,11 @@ namespace Kernel {
         int rows = static_cast<int>(A.rows());
         int cols = static_cast<int>(A.cols());
 
-        // Создаем и инициализируем cuBLAS handle
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ cuBLAS handle
         cublasHandle_t handle;
         checkCublas(cublasCreate(&handle), "Failed to create cuBLAS handle");
 
-        // Выделяем память на GPU для матрицы A и результирующей матрицы C
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ GPU пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ A пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ C
         double* d_A = nullptr;
         double* d_C = nullptr;
         size_t size = rows * cols * sizeof(double);
@@ -458,26 +456,26 @@ namespace Kernel {
         checkCuda(cudaMalloc((void**)&d_A, size), "Failed to allocate GPU memory for A");
         checkCuda(cudaMalloc((void**)&d_C, size), "Failed to allocate GPU memory for C");
 
-        // Копируем данные матрицы A на GPU
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ A пїЅпїЅ GPU
         checkCuda(cudaMemcpy(d_A, A.data(), size, cudaMemcpyHostToDevice), "Failed to copy data to GPU for A");
 
-        // Выполняем операцию умножения на скаляр d_C = S * d_A
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ d_C = S * d_A
         checkCublas(cublasDscal(handle, rows * cols, &S, d_A, 1), "Failed to perform matrix scaling");
 
-        // Копируем результат из d_A в d_C (если необходимо)
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ d_A пїЅ d_C (пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ)
         checkCuda(cudaMemcpy(d_C, d_A, size, cudaMemcpyDeviceToDevice), "Failed to copy data from d_A to d_C");
 
-        // Создаем результирующую матрицу на CPU
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ CPU
         Matrixd C(rows, cols);
 
-        // Копируем результат обратно на CPU
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ CPU
         checkCuda(cudaMemcpy(C.data(), d_C, size, cudaMemcpyDeviceToHost), "Failed to copy data from GPU for C");
 
-        // Освобождаем память на GPU
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ GPU
         checkCuda(cudaFree(d_A), "Failed to free GPU memory for A");
         checkCuda(cudaFree(d_C), "Failed to free GPU memory for C");
 
-        // Уничтожаем cuBLAS handle
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ cuBLAS handle
         checkCublas(cublasDestroy(handle), "Failed to destroy cuBLAS handle");
 
         return C;
@@ -492,11 +490,11 @@ namespace Kernel {
 
         int size = static_cast<int>(a.size());
 
-        // Создаем и инициализируем cuBLAS handle
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ cuBLAS handle
         cublasHandle_t handle;
         checkCublas(cublasCreate(&handle), "Failed to create cuBLAS handle");
 
-        // Выделяем память на GPU для векторов a и b
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ GPU пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ a пїЅ b
         double* d_a = nullptr;
         double* d_b = nullptr;
         size_t bytes = size * sizeof(double);
@@ -504,20 +502,20 @@ namespace Kernel {
         checkCuda(cudaMalloc((void**)&d_a, bytes), "Failed to allocate GPU memory for a");
         checkCuda(cudaMalloc((void**)&d_b, bytes), "Failed to allocate GPU memory for b");
 
-        // Копируем данные векторов a и b на GPU
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ a пїЅ b пїЅпїЅ GPU
         checkCuda(cudaMemcpy(d_a, a.data(), bytes, cudaMemcpyHostToDevice), "Failed to copy data to GPU for a");
         checkCuda(cudaMemcpy(d_b, b.data(), bytes, cudaMemcpyHostToDevice), "Failed to copy data to GPU for b");
 
         double result = 0.0;
 
-        // Выполняем операцию скалярного произведения
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         checkCublas(cublasDdot(handle, size, d_a, 1, d_b, 1, &result), "Failed to perform dot product");
 
-        // Освобождаем память на GPU
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ GPU
         checkCuda(cudaFree(d_a), "Failed to free GPU memory for a");
         checkCuda(cudaFree(d_b), "Failed to free GPU memory for b");
 
-        // Уничтожаем cuBLAS handle
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ cuBLAS handle
         checkCublas(cublasDestroy(handle), "Failed to destroy cuBLAS handle");
 
         return result;
@@ -544,9 +542,9 @@ namespace Kernel {
     /// <returns>Returns matrix that was applied with function (foo) </returns>
     Matrixd applyFuncMF(Matrixd a, double (*foo)(double))
     {
-        for (size_t i = 0; i < a.cols(); ++i)
+        for (size_t i = 0; i < a.rows(); ++i)
         {
-            for (size_t j = 0; j < a.rows(); ++j)
+            for (size_t j = 0; j < a.cols(); ++j)
             {
                 a(i, j) = foo(a(i, j));
             }
@@ -555,9 +553,9 @@ namespace Kernel {
     }
     Matrixd applyFuncMF(double (*foo)(double), Matrixd a)
     {
-        for (size_t i = 0; i < a.cols(); ++i)
+        for (size_t i = 0; i < a.rows(); ++i)
         {
-            for (size_t j = 0; j < a.rows(); ++j)
+            for (size_t j = 0; j < a.cols(); ++j)
             {
                 a(i, j) = foo(a(i, j));
             }
@@ -583,11 +581,11 @@ namespace Kernel {
         int rows = static_cast<int>(A.rows());
         int cols = static_cast<int>(A.cols());
 
-        // Создаем и инициализируем cuBLAS handle
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ cuBLAS handle
         cublasHandle_t handle;
         checkCublas(cublasCreate(&handle), "Failed to create cuBLAS handle");
 
-        // Выделяем память на GPU для матрицы A и вектора B и результирующего вектора C
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ GPU пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ A пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ B пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ C
         double* d_A = nullptr;
         double* d_B = nullptr;
         double* d_C = nullptr;
@@ -599,14 +597,14 @@ namespace Kernel {
         checkCuda(cudaMalloc((void**)&d_B, size_B), "Failed to allocate GPU memory for B");
         checkCuda(cudaMalloc((void**)&d_C, size_C), "Failed to allocate GPU memory for C");
 
-        // Копируем данные матрицы A и вектора B на GPU
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ A пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ B пїЅпїЅ GPU
         checkCuda(cudaMemcpy(d_A, A.data(), size_A, cudaMemcpyHostToDevice), "Failed to copy data to GPU for A");
         checkCuda(cudaMemcpy(d_B, B.data(), size_B, cudaMemcpyHostToDevice), "Failed to copy data to GPU for B");
 
         const double alpha = 1.0;
         const double beta = 0.0;
 
-        // Выполняем операцию умножения матрицы на вектор d_C = alpha * d_A * d_B + beta * d_C
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ d_C = alpha * d_A * d_B + beta * d_C
         checkCublas(cublasDgemv(handle,
             CUBLAS_OP_N,
             rows, cols,
@@ -617,18 +615,18 @@ namespace Kernel {
             d_C, 1),
             "Failed to perform matrix-vector multiplication");
 
-        // Создаем результирующий вектор на CPU
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ CPU
         Vectord C(rows);
 
-        // Копируем результат обратно на CPU
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ CPU
         checkCuda(cudaMemcpy(C.data(), d_C, size_C, cudaMemcpyDeviceToHost), "Failed to copy data from GPU for C");
 
-        // Освобождаем память на GPU
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ GPU
         checkCuda(cudaFree(d_A), "Failed to free GPU memory for A");
         checkCuda(cudaFree(d_B), "Failed to free GPU memory for B");
         checkCuda(cudaFree(d_C), "Failed to free GPU memory for C");
 
-        // Уничтожаем cuBLAS handle
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ cuBLAS handle
         checkCublas(cublasDestroy(handle), "Failed to destroy cuBLAS handle");
 
         return C;
@@ -644,11 +642,11 @@ namespace Kernel {
         int rows = static_cast<int>(b.rows());
         int cols = static_cast<int>(b.cols());
 
-        // Создаем и инициализируем cuBLAS handle
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ cuBLAS handle
         cublasHandle_t handle;
         checkCublas(cublasCreate(&handle), "Failed to create cuBLAS handle");
 
-        // Выделяем память на GPU для вектора a, матрицы b и результирующего вектора c
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ GPU пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ a, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ b пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ c
         double* d_a = nullptr;
         double* d_b = nullptr;
         double* d_c = nullptr;
@@ -660,15 +658,15 @@ namespace Kernel {
         checkCuda(cudaMalloc((void**)&d_b, size_b), "Failed to allocate GPU memory for b");
         checkCuda(cudaMalloc((void**)&d_c, size_c), "Failed to allocate GPU memory for c");
 
-        // Копируем данные вектора a и матрицы b на GPU
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ a пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ b пїЅпїЅ GPU
         checkCuda(cudaMemcpy(d_a, a.data(), size_a, cudaMemcpyHostToDevice), "Failed to copy data to GPU for a");
         checkCuda(cudaMemcpy(d_b, b.data(), size_b, cudaMemcpyHostToDevice), "Failed to copy data to GPU for b");
 
         const double alpha = 1.0;
         const double beta = 0.0;
 
-        // Выполняем операцию умножения вектора на матрицу d_c = alpha * d_b^T * d_a + beta * d_c
-        // Используем CUBLAS_OP_T для транспонирования матрицы b
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ d_c = alpha * d_b^T * d_a + beta * d_c
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ CUBLAS_OP_T пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ b
         checkCublas(cublasDgemv(handle,
             CUBLAS_OP_T,
             rows, cols,
@@ -679,18 +677,18 @@ namespace Kernel {
             d_c, 1),
             "Failed to perform vector-matrix multiplication");
 
-        // Создаем результирующий вектор на CPU
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ CPU
         Vectord c(cols);
 
-        // Копируем результат обратно на CPU
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ CPU
         checkCuda(cudaMemcpy(c.data(), d_c, size_c, cudaMemcpyDeviceToHost), "Failed to copy data from GPU for c");
 
-        // Освобождаем память на GPU
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ GPU
         checkCuda(cudaFree(d_a), "Failed to free GPU memory for a");
         checkCuda(cudaFree(d_b), "Failed to free GPU memory for b");
         checkCuda(cudaFree(d_c), "Failed to free GPU memory for c");
 
-        // Уничтожаем cuBLAS handle
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ cuBLAS handle
         checkCublas(cublasDestroy(handle), "Failed to destroy cuBLAS handle");
 
         return c;
@@ -702,32 +700,32 @@ namespace Kernel {
     {
         int size = static_cast<int>(A.size());
 
-        // Создаем и инициализируем cuBLAS handle
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ cuBLAS handle
         cublasHandle_t handle;
         checkCublas(cublasCreate(&handle), "Failed to create cuBLAS handle");
 
-        // Выделяем память на GPU для вектора A и результирующего вектора C
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ GPU пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ A пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ C
         double* d_A = nullptr;
         size_t bytes = size * sizeof(double);
 
         checkCuda(cudaMalloc((void**)&d_A, bytes), "Failed to allocate GPU memory for A");
 
-        // Копируем данные вектора A на GPU
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ A пїЅпїЅ GPU
         checkCuda(cudaMemcpy(d_A, A.data(), bytes, cudaMemcpyHostToDevice), "Failed to copy data to GPU for A");
 
-        // Выполняем операцию умножения на скаляр d_A = S * d_A
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ d_A = S * d_A
         checkCublas(cublasDscal(handle, size, &S, d_A, 1), "Failed to perform vector scaling");
 
-        // Создаем результирующий вектор на CPU
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ CPU
         Vectord C(size);
 
-        // Копируем результат обратно на CPU
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ CPU
         checkCuda(cudaMemcpy(C.data(), d_A, bytes, cudaMemcpyDeviceToHost), "Failed to copy data from GPU for C");
 
-        // Освобождаем память на GPU
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ GPU
         checkCuda(cudaFree(d_A), "Failed to free GPU memory for A");
 
-        // Уничтожаем cuBLAS handle
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ cuBLAS handle
         checkCublas(cublasDestroy(handle), "Failed to destroy cuBLAS handle");
 
         return C;
@@ -736,32 +734,32 @@ namespace Kernel {
     {
         int size = static_cast<int>(A.size());
 
-        // Создаем и инициализируем cuBLAS handle
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ cuBLAS handle
         cublasHandle_t handle;
         checkCublas(cublasCreate(&handle), "Failed to create cuBLAS handle");
 
-        // Выделяем память на GPU для вектора A и результирующего вектора C
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ GPU пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ A пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ C
         double* d_A = nullptr;
         size_t bytes = size * sizeof(double);
 
         checkCuda(cudaMalloc((void**)&d_A, bytes), "Failed to allocate GPU memory for A");
 
-        // Копируем данные вектора A на GPU
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ A пїЅпїЅ GPU
         checkCuda(cudaMemcpy(d_A, A.data(), bytes, cudaMemcpyHostToDevice), "Failed to copy data to GPU for A");
 
-        // Выполняем операцию умножения на скаляр d_A = S * d_A
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ d_A = S * d_A
         checkCublas(cublasDscal(handle, size, &S, d_A, 1), "Failed to perform vector scaling");
 
-        // Создаем результирующий вектор на CPU
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ CPU
         Vectord C(size);
 
-        // Копируем результат обратно на CPU
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ CPU
         checkCuda(cudaMemcpy(C.data(), d_A, bytes, cudaMemcpyDeviceToHost), "Failed to copy data from GPU for C");
 
-        // Освобождаем память на GPU
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ GPU
         checkCuda(cudaFree(d_A), "Failed to free GPU memory for A");
 
-        // Уничтожаем cuBLAS handle
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ cuBLAS handle
         checkCublas(cublasDestroy(handle), "Failed to destroy cuBLAS handle");
 
         return C;
@@ -776,11 +774,11 @@ namespace Kernel {
 
         int size = static_cast<int>(A.size());
 
-        // Создаем и инициализируем cuBLAS handle
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ cuBLAS handle
         cublasHandle_t handle;
         checkCublas(cublasCreate(&handle), "Failed to create cuBLAS handle");
 
-        // Выделяем память на GPU для векторов A, B и C
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ GPU пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ A, B пїЅ C
         double* d_A = nullptr;
         double* d_B = nullptr;
         double* d_C = nullptr;
@@ -789,29 +787,29 @@ namespace Kernel {
         checkCuda(cudaMalloc((void**)&d_B, size * sizeof(double)), "Failed to allocate GPU memory for B");
         checkCuda(cudaMalloc((void**)&d_C, size * sizeof(double)), "Failed to allocate GPU memory for C");
 
-        // Копируем данные векторов A и B на GPU
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ A пїЅ B пїЅпїЅ GPU
         checkCuda(cudaMemcpy(d_A, A.data(), size * sizeof(double), cudaMemcpyHostToDevice), "Failed to copy data to GPU for A");
         checkCuda(cudaMemcpy(d_B, B.data(), size * sizeof(double), cudaMemcpyHostToDevice), "Failed to copy data to GPU for B");
 
         const double alpha = 1.0;
         const double beta = -1.0;
 
-        // Выполняем операцию вычитания d_C = alpha * d_A + beta * d_B (т.е. d_C = d_A - d_B)
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ d_C = alpha * d_A + beta * d_B (пїЅ.пїЅ. d_C = d_A - d_B)
         checkCublas(cublasDaxpy(handle, size, &beta, d_B, 1, d_A, 1), "Failed to perform vector subtraction");
         checkCuda(cudaMemcpy(d_C, d_A, size * sizeof(double), cudaMemcpyDeviceToDevice), "Failed to copy result to d_C");
 
-        // Создаем результирующий вектор на CPU
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ CPU
         Vectord C(size);
 
-        // Копируем результат обратно на CPU
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ CPU
         checkCuda(cudaMemcpy(C.data(), d_C, size * sizeof(double), cudaMemcpyDeviceToHost), "Failed to copy data from GPU for C");
 
-        // Освобождаем память на GPU
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ GPU
         checkCuda(cudaFree(d_A), "Failed to free GPU memory for A");
         checkCuda(cudaFree(d_B), "Failed to free GPU memory for B");
         checkCuda(cudaFree(d_C), "Failed to free GPU memory for C");
 
-        // Уничтожаем cuBLAS handle
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ cuBLAS handle
         checkCublas(cublasDestroy(handle), "Failed to destroy cuBLAS handle");
 
         return C;
