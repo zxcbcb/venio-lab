@@ -5,6 +5,13 @@ project(Venio CUDA CXX) # Название проекта
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Backend toggle: configure with -DVENIO_USE_GPU=ON to compile the CUDA/cuBLAS
+# path (Config.hxx turns this into GPU_OPTIMIZATION for every translation unit).
+option(VENIO_USE_GPU "Use CUDA GPU backend for matrix ops" OFF)
+if(VENIO_USE_GPU)
+    add_compile_definitions(VENIO_USE_GPU)
+endif()
+
 set(Venio_headers_dir "${CMAKE_CURRENT_SOURCE_DIR}/Venio")
 set(Venio_sources_dir "${CMAKE_CURRENT_SOURCE_DIR}/Venio")
 
