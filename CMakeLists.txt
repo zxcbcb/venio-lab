@@ -79,3 +79,7 @@ target_link_libraries(VerifyBackend PUBLIC Kernel)
 add_executable(ConvTest Tests/ConvTest.cxx)
 target_link_libraries(ConvTest PRIVATE Venio)
 target_link_libraries(ConvTest PUBLIC Kernel)
+
+add_executable(AttnTest Tests/AttnTest.cxx)
+target_link_libraries(AttnTest PRIVATE Venio)
+target_link_libraries(AttnTest PUBLIC Kernel)
