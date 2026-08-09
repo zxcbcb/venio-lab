@@ -87,3 +87,10 @@ target_link_libraries(AttnTest PUBLIC Kernel)
 add_executable(TransformerTest Tests/TransformerTest.cxx)
 target_link_libraries(TransformerTest PRIVATE Venio)
 target_link_libraries(TransformerTest PUBLIC Kernel)
+
+# stb single-header image loader/writer (used by Venio/ImageIO)
+target_include_directories(Venio PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/stb")
+
+add_executable(LayerImageTest Tests/LayerImageTest.cxx)
+target_link_libraries(LayerImageTest PRIVATE Venio)
+target_link_libraries(LayerImageTest PUBLIC Kernel)

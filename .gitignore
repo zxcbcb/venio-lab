@@ -25,3 +25,6 @@
 # OS
 Thumbs.db
 .DS_Store
+
+# generated test outputs
+Tests/data/*_edges.png
