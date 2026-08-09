@@ -83,3 +83,7 @@ target_link_libraries(ConvTest PUBLIC Kernel)
 add_executable(AttnTest Tests/AttnTest.cxx)
 target_link_libraries(AttnTest PRIVATE Venio)
 target_link_libraries(AttnTest PUBLIC Kernel)
+
+add_executable(TransformerTest Tests/TransformerTest.cxx)
+target_link_libraries(TransformerTest PRIVATE Venio)
+target_link_libraries(TransformerTest PUBLIC Kernel)
