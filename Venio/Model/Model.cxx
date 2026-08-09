@@ -19,8 +19,11 @@ Model::Model(LossFunction *loss_function, const std::vector<std::shared_ptr<Laye
 }
 Model::~Model()
 {
+    // NOTE: _loss_function is NOT owned by Model — callers pass the address of
+    // their own object (e.g. `SquareErrorFunction square; Model net(&square,...)`).
+    // Deleting it here corrupted the heap (0xC0000374). Ownership stays with the
+    // caller; Model only holds a non-owning pointer.
     _layers.clear();
-    delete _loss_function;
 }
 
 void Model::addLayer(std::shared_ptr<Layer> layer)
