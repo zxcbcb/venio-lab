@@ -118,3 +118,7 @@ target_link_libraries(MHATest PUBLIC Kernel)
 add_executable(EncoderTest Tests/EncoderTest.cxx)
 target_link_libraries(EncoderTest PRIVATE Venio)
 target_link_libraries(EncoderTest PUBLIC Kernel)
+
+add_executable(PoolTest Tests/PoolTest.cxx)
+target_link_libraries(PoolTest PRIVATE Venio)
+target_link_libraries(PoolTest PUBLIC Kernel)
