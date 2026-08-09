@@ -65,6 +65,31 @@ Eigen is bundled in `dependencies/`, so no separate install is needed.
 - [x] **Test layers** on noise and on images — Conv edge-filter verified on random noise and on a real photo (lena.jpg → saved edge map)
 - [x] **Train an end-to-end model** on image data — coordinate-MLP fits a photo via GD + SquareError, loss 0.19 → 0.0024
 
+## Advanced layers (extended, gradient-checked)
+
+Beyond the roadmap, the library now includes production-shaped layers, each with a
+full backward pass verified numerically (analytic vs finite-difference, diff < 1e-9):
+
+- **`Conv2D`** — multi-channel input, multiple filters, stride, padding, full backward
+- **`MultiHeadAttention`** — multi-head self-attention with output projection, full backward
+- **`TransformerEncoder`** — complete block backward: LayerNorm + FFN + residuals + MHA
+- **`MaxPool2D`** — max pooling with gradient routing; **`Flatten`** — conv↔dense bridge
+
+### Test suite (`Tests/`, each an `add_executable` in CMakeLists)
+
+| Test | Checks |
+|---|---|
+| `VerifyBackend` | dense forward/backward, CPU output == GPU output (bit-identical) |
+| `ConvTest` | single-channel conv gradient check |
+| `Conv2DTest` | general Conv2D gradient check (channels/filters/stride/pad) |
+| `AttnTest` / `MHATest` | single-head / multi-head attention gradient checks |
+| `TransformerTest` / `EncoderTest` | transformer block forward / full-block backward |
+| `PoolTest` | MaxPool2D gradient check + Flatten round-trip |
+| `LayerImageTest` | conv on noise and on a real photo |
+| `TrainImage` | end-to-end training on a photo |
+| `OptCompare` | GD vs ADAM vs RMSProp vs Adagrad vs Adadelta |
+| `Bench` | CPU vs GPU timing |
+
 ## Authors
 
 pixaut · drgnbon
