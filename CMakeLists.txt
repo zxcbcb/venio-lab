@@ -114,3 +114,7 @@ target_link_libraries(Conv2DTest PUBLIC Kernel)
 add_executable(MHATest Tests/MHATest.cxx)
 target_link_libraries(MHATest PRIVATE Venio)
 target_link_libraries(MHATest PUBLIC Kernel)
+
+add_executable(EncoderTest Tests/EncoderTest.cxx)
+target_link_libraries(EncoderTest PRIVATE Venio)
+target_link_libraries(EncoderTest PUBLIC Kernel)
