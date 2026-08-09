@@ -28,3 +28,4 @@ Thumbs.db
 
 # generated test outputs
 Tests/data/*_edges.png
+Tests/data/*_recon.png

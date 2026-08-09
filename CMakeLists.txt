@@ -94,3 +94,7 @@ target_include_directories(Venio PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/dependencie
 add_executable(LayerImageTest Tests/LayerImageTest.cxx)
 target_link_libraries(LayerImageTest PRIVATE Venio)
 target_link_libraries(LayerImageTest PUBLIC Kernel)
+
+add_executable(TrainImage Tests/TrainImage.cxx)
+target_link_libraries(TrainImage PRIVATE Venio)
+target_link_libraries(TrainImage PUBLIC Kernel)
