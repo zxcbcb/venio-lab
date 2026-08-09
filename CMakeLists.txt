@@ -102,3 +102,7 @@ target_link_libraries(TrainImage PUBLIC Kernel)
 add_executable(Bench Tests/Bench.cxx)
 target_link_libraries(Bench PRIVATE Venio)
 target_link_libraries(Bench PUBLIC Kernel)
+
+add_executable(OptCompare Tests/OptCompare.cxx)
+target_link_libraries(OptCompare PRIVATE Venio)
+target_link_libraries(OptCompare PUBLIC Kernel)
