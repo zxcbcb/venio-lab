@@ -98,3 +98,7 @@ target_link_libraries(LayerImageTest PUBLIC Kernel)
 add_executable(TrainImage Tests/TrainImage.cxx)
 target_link_libraries(TrainImage PRIVATE Venio)
 target_link_libraries(TrainImage PUBLIC Kernel)
+
+add_executable(Bench Tests/Bench.cxx)
+target_link_libraries(Bench PRIVATE Venio)
+target_link_libraries(Bench PUBLIC Kernel)
