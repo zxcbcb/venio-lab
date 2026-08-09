@@ -24,7 +24,10 @@ public:
     void activateLayer();
 
     virtual void propogateLayer(Matrixd last_layer_output) = 0;
-    virtual void backPropogateLayer(Matrixd next_layer_derivation, Matrixd next_layer_values, Matrixd next_layer_weights, Matrixd last_active_values) = 0;
+    // Compute this layer's weight/bias gradients from the gradient flowing in from
+    // the next layer (grad_output) and the previous layer's activations, store them,
+    // and return the gradient to pass further back. Each layer type defines its own.
+    virtual Matrixd backwardLayer(const Matrixd& grad_output, const Matrixd& prev_active_values) = 0;
 
     void setLayerDerivation(Matrixd new_derivation_neurons_matrix);
     void setLayerBias(Matrixd new_bias_matrix);

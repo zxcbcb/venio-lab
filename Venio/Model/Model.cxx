@@ -74,37 +74,12 @@ void Model::backPropogation(Matrixd right_answer)
 
     _last_right_answer = right_answer;
 
-    Matrixd dt, dw, dh, df, db;
     Matrixd dx = getDerivationLossForLastLayer(std::move(right_answer));
 
     for (int i = _model_size - 1; i >= 1; --i)
     {
-
-        dh = dx;
-        df = _layers[i]->getLayerDerivationMatrix();
-
-#ifdef CPU_OPTIMIZATION
-        dt = dh.array() * df.array();
-
-        dw = _layers[i - 1]->getLayerActiveValues().transpose() * dt; //
-
-        dx = dt * _layers[i]->getLayerWeights().transpose();
-#endif
-#ifdef GPU_OPTIMIZATION
-        dt = K::emultMM(dh, df);
-
-        dw = K::multMM(K::transposeM(_layers[i - 1]->getLayerActiveValues()), dt);
-
-        dx = K::multMM(dt, K::transposeM(_layers[i]->getLayerWeights()));
-#endif
-
-        db = dt;
-
-        _layers[i]->setLayerDerivation(dt);
-        _layers[i]->setLayerWeightsGradient(dw);
-        _layers[i]->setLayerBiasGradient(db);
+        dx = _layers[i]->backwardLayer(dx, _layers[i - 1]->getLayerActiveValues());
     }
-    // Do work------------------------------------------------------------------
 }
 
 void Model::backPropogation(){
@@ -125,30 +100,7 @@ void Model::backPropogation(){
 
     for (int i = _model_size - 1; i >= 1; --i)
     {
-
-        dh = dx;
-        df = _layers[i]->getLayerDerivationMatrix();
-
-#ifdef CPU_OPTIMIZATION
-        dt = dh.array() * df.array();
-
-        dw = _layers[i - 1]->getLayerActiveValues().transpose() * dt; //
-
-        dx = dt * _layers[i]->getLayerWeights().transpose();
-#endif
-#ifdef GPU_OPTIMIZATION
-        dt = K::emultMM(dh, df);
-
-        dw = K::multMM(K::transposeM(_layers[i - 1]->getLayerActiveValues()), dt);
-
-        dx = K::multMM(dt, K::transposeM(_layers[i]->getLayerWeights()));
-#endif
-
-        db = dt;
-
-        _layers[i]->setLayerDerivation(dt);
-        _layers[i]->setLayerWeightsGradient(dw);
-        _layers[i]->setLayerBiasGradient(db);
+        dx = _layers[i]->backwardLayer(dx, _layers[i - 1]->getLayerActiveValues());
     }
 }
 
