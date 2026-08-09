@@ -106,3 +106,7 @@ target_link_libraries(Bench PUBLIC Kernel)
 add_executable(OptCompare Tests/OptCompare.cxx)
 target_link_libraries(OptCompare PRIVATE Venio)
 target_link_libraries(OptCompare PUBLIC Kernel)
+
+add_executable(Conv2DTest Tests/Conv2DTest.cxx)
+target_link_libraries(Conv2DTest PRIVATE Venio)
+target_link_libraries(Conv2DTest PUBLIC Kernel)
