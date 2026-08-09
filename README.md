@@ -60,7 +60,7 @@ Eigen is bundled in `dependencies/`, so no separate install is needed.
 ## Roadmap
 
 - [x] **Fix the GPU / CUDA backend** (`CudaKernel`) — CPU/GPU switch, CUDA 12.6 (sm_61), GPU output verified bit-identical to CPU
-- [ ] **Convolution layer** — finish `ConvolutionLayer`
+- [x] **Convolution layer** — single-channel 2D `ConvolutionLayer` (forward+backward), gradient-checked (analytic == numeric)
 - [ ] **Transformer** block
 - [ ] **Test layers** on noise and on images
 - [ ] **Train an end-to-end model** on image data
