@@ -71,3 +71,7 @@ target_link_libraries(Venio PUBLIC Kernel)
 add_executable(Main Main.cxx)
 target_link_libraries(Main PRIVATE Venio)
 target_link_libraries(Main PUBLIC Kernel)
+
+add_executable(VerifyBackend Tests/VerifyBackend.cxx)
+target_link_libraries(VerifyBackend PRIVATE Venio)
+target_link_libraries(VerifyBackend PUBLIC Kernel)
