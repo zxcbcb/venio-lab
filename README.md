@@ -63,7 +63,7 @@ Eigen is bundled in `dependencies/`, so no separate install is needed.
 - [x] **Convolution layer** — single-channel 2D `ConvolutionLayer` (forward+backward), gradient-checked (analytic == numeric)
 - [x] **Transformer** block — single-head self-attention (forward+backward, gradient-checked) + encoder block (attention→residual→LayerNorm→FFN→residual→LayerNorm) forward verified
 - [x] **Test layers** on noise and on images — Conv edge-filter verified on random noise and on a real photo (lena.jpg → saved edge map)
-- [ ] **Train an end-to-end model** on image data
+- [x] **Train an end-to-end model** on image data — coordinate-MLP fits a photo via GD + SquareError, loss 0.19 → 0.0024
 
 ## Authors
 
